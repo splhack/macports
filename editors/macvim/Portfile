@@ -1,0 +1,142 @@
+# $Id$
+PortSystem	1.0
+
+name				macvim
+version				20100614
+revision			0
+categories			editors
+platforms			darwin
+maintainers			nomaintainer
+description			MacVim is a port of the text editor Vim to Mac OS X.
+long_description	MacVim supports multiple windows with tabbed editing and a host of other features. \
+					MacVim brings you the full power of Vim to Mac OS X.
+homepage			http://code.google.com/p/macvim-kaoriya/
+
+master_sites		http://github.com/splhack/macvim/tarball
+checksums			sha1 16a9d6b5df52ed5f45af1f09a208f36d2ba69b00
+distfiles			${version}
+worksrcdir			splhack-macvim-9dea77b/src
+
+depends_lib			port:cmigemo \
+					port:gettext \
+					port:libiconv \
+					port:ncurses
+
+configure.pre_args	--prefix=${applications_dir}
+configure.args		--with-features=huge \
+					--enable-multibyte \
+					--enable-netbeans \
+					--with-tlib=ncurses
+configure.cppflags	-I${prefix}/include
+configure.ldflags	-L${prefix}/lib
+
+if {[variant_isset universal]} {
+	set macosx_deployment_target 10.5
+	configure.args-append	--with-macarchs="${universal_archs}" \
+							--with-macsdk="${macosx_deployment_target}"
+}
+
+use_parallel_build	yes
+
+variant perl description {Enable Perl scripting} {
+	configure.args-append	--enable-perlinterp
+}
+variant python description {Enable Python scripting} {
+	configure.args-append	--enable-pythoninterp
+}
+variant ruby description {Enable Ruby scripting} {
+	configure.args-append	--enable-rubyinterp
+}
+variant tcl description {Enable Tcl scripting} {
+	configure.args-append	--enable-tclinterp
+}
+variant cscope description {Enable source code browsing with cscope} {
+	configure.args-append	--enable-cscope
+}
+
+post-patch {
+	reinplace \
+		"s|^# VIM_APP_DIR=/Applications$|VIM_APP_DIR=${applications_dir}|" \
+		${worksrcpath}/MacVim/mvim
+}
+
+set appPath "${destroot}${applications_dir}/MacVim.app/Contents"
+set runtimePath "${appPath}/Resources/vim/runtime"
+
+destroot {
+	file copy ${worksrcpath}/MacVim/build/Release/MacVim.app ${destroot}${applications_dir}
+	xinstall -m 755 ${worksrcpath}/MacVim/mvim ${destroot}${prefix}/bin
+	xinstall -d 755 ${runtimePath}/lang/ja_JP.UTF-8/LC_MESSAGES
+	xinstall -m 644 ${worksrcpath}/po/ja_JP.UTF-8.mo \
+		${runtimePath}/lang/ja_JP.UTF-8/LC_MESSAGES/vim.mo
+}
+
+test.run			yes
+
+variant standalone description {Enable standalonize} {
+	depends_lib-append port:clewn
+	configure.env-append	PATH="/usr/bin:${env(PATH)}"
+	configure.cppflags-append	-DDYNAMIC_PERL -DDYNAMIC_PYTHON -DDYNAMIC_RUBY
+	pre-extract {
+		if {[catch {system "port installed|grep -e \" ruby @.*(active)\" -e \" perl5 @.*(active)\" -e \" perl5.8 @.*(active)\""} result]} {} else {
+			return -code error "perl or ruby is activated"
+		}
+	}
+	post-configure {
+		reinplace "s|^PERL_LIBS|#PERL_LIBS|" ${worksrcpath}/auto/config.mk
+		reinplace "s|^PYTHON_LIBS|#PYTHON_LIBS|" ${worksrcpath}/auto/config.mk
+		reinplace "s|^RUBY_LIBS|#RUBY_LIBS|" ${worksrcpath}/auto/config.mk
+	}
+	post-destroot {
+		# ctags
+		file copy ${prefix}/bin/ctags ${appPath}/MacOS
+
+		# clewn
+		file copy ${prefix}/bin/clewn ${appPath}/MacOS
+		set clewnPath ${prefix}/share/clewn
+		file copy ${clewnPath}/.clewn_keys ${runtimePath}
+		file copy ${clewnPath}/clewn.vim ${runtimePath}
+		file copy ${clewnPath}/doc/clewn.txt ${runtimePath}/doc
+		file copy ${clewnPath}/macros/clewn_mappings.vim ${runtimePath}/macros
+		file copy ${clewnPath}/syntax/gdbvar.vim ${runtimePath}/syntax
+
+		# dylibs
+		foreach dylib {intl.8 iconv.2 migemo.1 ncurses.5 readline.6} {
+			set libname [lindex [split ${dylib} .] 0]
+			set instname "@executable_path/../Frameworks/lib${libname}.dylib"
+			set origname "${prefix}/lib/lib${dylib}.dylib"
+			foreach exec {MacOS/Vim MacOS/clewn} {
+				system "install_name_tool \
+					-change ${origname} ${instname} ${appPath}/${exec}"
+			}
+			if {[file type ${origname}] == "link"} {
+				set realpath "${prefix}/lib/"
+				append realpath [file readlink ${origname}]
+			} else {
+				set realpath ${origname}
+			}
+			xinstall -m 755 ${realpath} \
+				${appPath}/Frameworks/lib${libname}.dylib
+		}
+		system "install_name_tool \
+			-change ${prefix}/lib/libiconv.2.dylib \
+			@executable_path/../Frameworks/libiconv.dylib \
+			${appPath}/Frameworks/libintl.dylib"
+		system "install_name_tool \
+			-change ${prefix}/lib/libncurses.5.dylib \
+			@executable_path/../Frameworks/libncurses.dylib \
+			${appPath}/Frameworks/libreadline.dylib"
+
+		# migemo dicts
+		xinstall -d 755 ${runtimePath}/dict
+		foreach mdict {han2zen.dat hira2kata.dat \
+				migemo-dict roma2hira.dat zen2han.dat} {
+			xinstall -m 644 ${prefix}/share/migemo/utf-8/${mdict} \
+				${runtimePath}/dict
+		}
+
+		# vim tags
+		system "${appPath}/MacOS/Vim \
+			--cmd \":helptag ${runtimePath}/doc\" --cmd :quit"
+	}
+}

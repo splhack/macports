@@ -1,0 +1,36 @@
+# $Id$
+
+PortSystem 1.0
+name            fmdiff
+version         7819
+revision        0
+categories      devel
+maintainers     nomaintainer@macports.org
+description     Wrapper scripts for FileMerge
+long_description Apple's Developer Tools for Mac OS X include FileMerge, \
+    a graphical tool to compare and merge files. FileMerge can be much \
+    handier to use, unfortunately, it doesn't integrate with Subversion \
+    straightforwardly. It can be opened from the command line with \
+    the opendiff command, but its interface differs from that of diff \
+    and diff3. It returns immediately (i.e. it forks and does not block) \
+    and it expects different arguments. Some wrapper scripts are thus \
+    required to call FileMerge from Subversion.
+homepage        http://ssel.vub.ac.be/ssel/internal:fmdiff
+platforms       darwin
+
+fetch.type      svn
+svn.url         http://ssel.vub.ac.be/svn-gen/bdefrain/fmscripts/
+svn.tag         ${version}
+worksrcdir      fmscripts
+
+patch {
+    reinplace "s|DESTDIR=/usr/local|DESTDIR=${destroot}${prefix}|" ${worksrcpath}/Makefile
+}
+
+post-destroot {
+	xinstall -m 0755 ${filespath}/fmgitdiff ${destroot}${prefix}/bin
+}
+
+use_configure   no
+build {}
+destroot.destdir

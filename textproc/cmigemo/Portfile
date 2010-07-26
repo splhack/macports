@@ -1,0 +1,109 @@
+# $Id:  $
+
+PortSystem 1.0
+name			cmigemo
+version			1.3c
+revision		8
+categories		textproc
+depends_lib		bin:iconv:libiconv bin:nkf:nkf
+maintainers		nomaintainer
+description		C/Migemo is a Japanese incremental search tool.
+long_description	\
+	C/Migemo is a set of a library and an application to search \
+	Japanese words incrementally, or a C version of Migemo originally \
+	written in Ruby.
+patchfiles		patch-config.mk.in.diff \
+				patch-config_default.mk.diff patch-dict.mk.diff \
+				patch-Make_osx.mk.diff \
+				patch-romaji.c patch-mnode.c
+extract.suffix	tar.bz2
+use_bzip2		yes
+set dictfile	SKK-JISYO.ML.gz
+distfiles		${distname}${extract.suffix}:src \
+				${dictfile}:dic
+homepage		http://www.kaoriya.net/
+master_sites    http://www.kaoriya.net/dist/var:src \
+				http://openlab.jp/skk/dic:dic
+checksums		${distname}${extract.suffix} md5 \
+				 	0b9d2feff4cfdc673cc1947fe54191ed \
+				${dictfile} none
+extract.only	${distname}${extract.suffix}
+post-extract	{file copy ${distpath}/${dictfile} \
+					  ${worksrcpath}/dict/SKK-JISYO.L.gz}
+build.env			CC=cc
+build.target		osx osx-dict
+
+set dics			{han2zen.dat hira2kata.dat migemo-dict roma2hira.dat zen2han.dat}
+set tools			{skk2migemo.pl optimize-dict.pl}
+
+post-patch			{
+	reinplace "s|/usr/local|${prefix}|" \
+		${worksrcpath}/compile/config.mk.in  \
+		${worksrcpath}/compile/config_default.mk \
+		${worksrcpath}/tools/migemo.vim
+	foreach TOOL ${tools} {
+		reinplace "s|/usr/bin/|/usr/bin/env |" ${worksrcpath}/tools/${TOOL}
+	}
+}
+
+destroot			{
+	# bin
+	xinstall -d -m 755 ${destroot}${prefix}/bin
+	xinstall -m 755 ${worksrcpath}/build/cmigemo \
+			${destroot}${prefix}/bin
+	# include
+	xinstall -d -m 755 ${destroot}${prefix}/include
+	xinstall -m 644 ${worksrcpath}/src/migemo.h \
+			${destroot}${prefix}/include
+	# doc
+	xinstall -d -m 755 ${destroot}${prefix}/share/doc/migemo
+	xinstall -m 644 ${worksrcpath}/doc/README_j.txt \
+			${destroot}${prefix}/share/doc/migemo
+	if {![variant_isset utf8]} {
+	# dict
+	xinstall -d -m 755 ${destroot}${prefix}/share/migemo/euc-jp
+	xinstall -d -m 755 ${destroot}${prefix}/share/migemo/cp932
+	foreach DIC ${dics} {
+		xinstall -m 644 ${worksrcpath}/dict/${DIC} \
+			${destroot}${prefix}/share/migemo/cp932
+		xinstall -m 644 ${worksrcpath}/dict/euc-jp.d/${DIC} \
+			${destroot}${prefix}/share/migemo/euc-jp
+	}
+	}
+	# tools
+	xinstall -d -m 755 ${destroot}${prefix}/share/migemo/tools
+	xinstall -m 644 ${worksrcpath}/tools/migemo.vim \
+		${destroot}${prefix}/share/migemo/tools
+	foreach TOOL ${tools} {
+		xinstall -m 644 ${worksrcpath}/tools/${TOOL} \
+			${destroot}${prefix}/share/migemo/tools
+	}
+	# lib
+	xinstall -d -m 755 ${destroot}${prefix}/lib
+	xinstall -m 755 ${worksrcpath}/libmigemo.1.1.0.dylib \
+		${destroot}${prefix}/lib
+	foreach dylib {libmigemo.1 libmigemo} { 
+		system "ln -s ./libmigemo.1.1.0.dylib ${destroot}${prefix}/lib/${dylib}.dylib"
+	}
+}
+
+variant utf8 {
+	post-build {
+		system "mkdir dict/utf-8.d"
+		foreach DIC ${dics} {
+			system "nkf -w < dict/${DIC} > dict/utf-8.d/${DIC}"
+		}
+	}
+
+	post-destroot {
+		xinstall -d -m 755 ${destroot}${prefix}/share/migemo/utf-8
+		foreach DIC ${dics} {
+			xinstall -m 644 ${worksrcpath}/dict/utf-8.d/${DIC} \
+			${destroot}${prefix}/share/migemo/utf-8
+		}
+	}
+}
+
+variant universal {
+	patchfiles-append	patch-universal
+}

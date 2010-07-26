@@ -1,0 +1,28 @@
+# $Id$
+PortSystem 1.0
+
+name			clewn
+version			1.15
+revision		0
+categories		devel
+maintainers		nomaintainer
+description		full gdb support in the vim editor
+long_description \
+	Clewn implements full gdb support in the vim editor: breakpoints, \
+	watch variables, gdb command completion, assembly windows, etc.
+homepage		http://clewn.sourceforge.net/
+platforms		darwin
+
+master_sites	sourceforge
+checksums		sha1 fa47ee9b4f6e60cf9ab1c2966e1677a675051c8e
+
+depends_lib		port:ncurses port:readline
+
+configure.type	gnu
+configure.env	vimdir="${prefix}/share/clewn"
+configure.cppflags	-I${prefix}/include
+configure.ldflags	-L${prefix}/lib
+
+post-configure {
+	reinplace -E "s/-lcurses/-lncurses/" ${worksrcpath}/Makefile
+}

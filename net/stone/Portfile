@@ -1,0 +1,34 @@
+# $Id$
+PortSystem 1.0
+
+name			stone
+version			2.3e
+revision		0
+categories		net
+maintainers		nomaintainer
+description		a TCP/IP repeater in the application layer
+long_description \
+	Stone is a TCP/IP repeater in the application layer. It repeats TCP and \
+	UDP from inside to outside of a firewall, or from outside to inside.
+homepage		http://www.nanno.org/sengoku/stone/
+platforms		darwin
+
+master_sites	${homepage}
+checksums		sha1 1ed12f29c1f896c1a94237b30201c615af5bb0f8
+
+set worksrcdir	stone-2.3d-2.3.2.7
+use_configure	no
+build.target	macosx
+
+variant ssl {
+	build.target macosx-ssl
+}
+
+destroot {
+	xinstall -m 0755 ${worksrcpath}/stone ${destroot}${prefix}/bin
+	set docpath ${destroot}${prefix}/share/doc/stone
+	xinstall -d ${docpath}
+	foreach file {README.txt README.en.txt} {
+		xinstall -m 0644 ${worksrcpath}/${file} ${docpath}
+	}
+}

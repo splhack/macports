@@ -1,0 +1,11 @@
+--- src/Makefile.orig
++++ src/Makefile
+@@ -1254,7 +1254,7 @@
+ 		  -mdynamic-no-pic -pipe
+ COCOAGUI_IPATH	= -I. -Iproto -F$(COCOAFMWK_DIR)
+ COCOAGUI_LIBS_DIR =
+-COCOAGUI_LIBS1	= -framework Cocoa -framework PSMTabBarControl -F$(COCOAFMWK_DIR)
++COCOAGUI_LIBS1	= -framework Carbon -framework Cocoa -framework PSMTabBarControl -F$(COCOAFMWK_DIR)
+ COCOAGUI_LIBS2	=
+ COCOAGUI_INSTALL = install_macosx
+ COCOAGUI_TARGETS =

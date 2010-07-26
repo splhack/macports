@@ -1,0 +1,19 @@
+*** compile/Make_osx.mak.orig	Mon Jan 24 01:36:15 2005
+--- compile/Make_osx.mak	Mon Jan 24 01:43:22 2005
+***************
+*** 26,32 ****
+  #
+  $(libmigemo_LIB): $(libmigemo_DSO)
+  $(libmigemo_DSO): $(libmigemo_OBJ)
+! 	$(CC) -dynamiclib -install_name $@ -o $(libmigemo_LIB) $(libmigemo_OBJ)
+  	$(RM) $@ $(libmigemo)
+  	ln -s $(libmigemo_LIB) $@
+  	ln -s $(libmigemo_LIB) $(libmigemo)
+--- 26,32 ----
+  #
+  $(libmigemo_LIB): $(libmigemo_DSO)
+  $(libmigemo_DSO): $(libmigemo_OBJ)
+! 	$(CC) -dynamiclib -install_name $(prefix)/lib/$@ -o $(libmigemo_LIB) $(libmigemo_OBJ)
+  	$(RM) $@ $(libmigemo)
+  	ln -s $(libmigemo_LIB) $@
+  	ln -s $(libmigemo_LIB) $(libmigemo)

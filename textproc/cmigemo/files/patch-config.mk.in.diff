@@ -1,0 +1,23 @@
+*** compile/config.mk.in.orig	Mon Jan 24 01:36:55 2005
+--- compile/config.mk.in	Mon Jan 24 01:41:02 2005
+***************
+*** 33,41 ****
+  PERL		= perl
+  BUNZIP2		= bzip2 -d
+  GUNZIP		= gzip -d
+! FILTER_CP932	= ${PROGRAM_ENCODEFILTER} -s
+! FILTER_EUCJP	= ${PROGRAM_ENCODEFILTER} -e
+! FILTER_UTF8	= iconv -t utf-8 -f cp932
+  INSTALL		= ${PROGRAM_INSTALL} -c
+  INSTALL_PROGRAM	= $(INSTALL) -m 755
+  INSTALL_DATA	= $(INSTALL) -m 644
+--- 33,41 ----
+  PERL		= perl
+  BUNZIP2		= bzip2 -d
+  GUNZIP		= gzip -d
+! FILTER_CP932	= nkf -s
+! FILTER_EUCJP	= nkf -e
+! FILTER_UTF8		= nkf -w
+  INSTALL		= ${PROGRAM_INSTALL} -c
+  INSTALL_PROGRAM	= $(INSTALL) -m 755
+  INSTALL_DATA	= $(INSTALL) -m 644

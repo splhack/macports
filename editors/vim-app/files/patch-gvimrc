@@ -1,0 +1,21 @@
+--- vim72-kaoriya-w32j/gvimrc.orig
++++ vim72-kaoriya-w32j/gvimrc
+@@ -78,7 +78,8 @@
+     set ambiwidth=auto
+   endif
+ elseif has('mac')
+-  set guifont=Osaka－等幅:h14
++  set guifont=Osaka-Mono:h14
++  set guifontwide=Osaka-Mono:h14
+ elseif has('xfontset')
+   " UNIX用 (xfontsetを使用)
+   set guifontset=a14,r14,k14
+@@ -99,7 +99,7 @@
+ "---------------------------------------------------------------------------
+ " 日本語入力に関する設定:
+ "
+-if has('multi_byte_ime') || has('xim')
++if has('multi_byte_ime') || has('xim') || has('mac')
+   " IME ON時のカーソルの色を設定(設定例:紫)
+   highlight CursorIM guibg=Purple guifg=NONE
+   " 挿入モード・検索モードでのデフォルトのIME状態設定

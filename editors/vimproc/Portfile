@@ -1,0 +1,41 @@
+# $Id$
+PortSystem 1.0
+
+name			vimproc
+version			v3.00
+revision		0
+categories		editors
+maintainers		nomaintainer
+description		Interactive command execution in Vim.
+long_description \
+	Interactive command execution in Vim.
+homepage		http://github.com/Shougo/vimproc/
+platforms		darwin
+
+#set gittag		${version}
+set gittag		f149b7e6437a5722ceb538306e1f44416278e25c
+distname		${name}-${gittag}
+use_zip			yes
+checksums		${distname}.zip sha1 12d44e4a5eae5e2864a743433805c00461233329
+master_sites	"http://github.com/Shougo/vimproc/zipball/${gittag}?"
+use_configure	no
+build.cmd		make -f make_mac.mak
+
+post-extract {
+	system "mv ${workpath}/Shougo-vimproc-* ${workpath}/${distname}"
+}
+
+post-patch {
+	reinplace -E "s/^(CFLAGS.*) -arch ppc64\$/\\1 -mmacosx-version-min=10.4/" \
+		${worksrcpath}/make_mac.mak
+}
+
+destroot {
+	set dstdir ${destroot}${prefix}/share/vimproc/autoload
+	xinstall -d -m 0755 ${dstdir}
+	xinstall -m 0755 ${worksrcpath}/autoload/proc.so ${dstdir}
+	xinstall -m 0644 ${worksrcpath}/autoload/vimproc.vim ${dstdir}
+}
+
+default_variants +universal
+variant universal {}

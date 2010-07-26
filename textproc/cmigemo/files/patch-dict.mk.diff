@@ -1,0 +1,19 @@
+*** dict/dict.mak.orig	Sat Jun 19 01:28:52 2004
+--- dict/dict.mak	Tue Dec 28 00:45:59 2004
+***************
+*** 22,28 ****
+  	$(PERL) ../tools/optimize-dict.pl < dict.tmp > $@
+  	-$(RM) dict.tmp
+  $(SKKDIC_FILE):
+! 	$(HTTP) $(SKKDIC_BASEURL)/$@.gz
+  	$(GUNZIP) $@.gz
+  
+  ##############################################################################
+--- 22,28 ----
+  	$(PERL) ../tools/optimize-dict.pl < dict.tmp > $@
+  	-$(RM) dict.tmp
+  $(SKKDIC_FILE):
+! #	$(HTTP) $(SKKDIC_BASEURL)/$@.gz
+  	$(GUNZIP) $@.gz
+  
+  ##############################################################################

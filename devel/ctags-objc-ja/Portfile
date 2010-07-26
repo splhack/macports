@@ -1,0 +1,42 @@
+# $Id$
+PortSystem 1.0
+
+name			ctags-objc-ja
+version			20090508
+revision		0
+categories		devel
+maintainers		nomaintainer
+description		ObjC enabled ctags with Japanese support
+long_description \
+	Exuberant Ctags generates an index (or tag) file of source language \
+	objects in source files that allows these items to be quickly and \
+	easily located by a text editor or other utility. \
+	Alternatively, it can generate a cross reference file which lists, \
+	in human-readable form, information about the various objects found \
+	in a set of source code files. \
+	Supported languages include: Assembler, AWK, ASP, BETA, Bourne/Korn/Zsh \
+	Shell, C, C++, COBOL, Eiffel, Fortran, Java, Lisp, Lua, Make, Pascal, Perl, \
+	PHP, Python, REXX, Ruby, S-Lang, Scheme, Tcl, Vim and Yacc.
+homepage		http://github.com/splhack/ctags-objc-ja/
+platforms		darwin freebsd
+
+set gittag		${version}
+distname		${name}-${gittag}
+use_zip			yes
+checksums		\
+	${distname}.zip sha1 67f7b8b7115c7aa53b65c2f229fd82cff5e98fe7
+master_sites	\
+	"http://github.com/splhack/ctags-objc-ja/zipball/${gittag}?"
+
+post-extract {
+	system "mv ${workpath}/splhack-ctags-objc-ja-* ${workpath}/${distname}"
+}
+
+use_autoconf	yes
+configure.type	gnu
+configure.args	--enable-macro-patterns \
+				--enable-japanese-support \
+				--mandir=\\\${prefix}/share/man \
+				--with-readlib
+
+destroot.destdir	prefix=${destroot}${prefix}
