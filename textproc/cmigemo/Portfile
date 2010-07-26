@@ -89,9 +89,9 @@ destroot			{
 
 variant utf8 {
 	post-build {
-		system "mkdir dict/utf-8.d"
+		xinstall -d -m 755 ${worksrcpath}/dict/utf-8.d
 		foreach DIC ${dics} {
-			system "nkf -w < dict/${DIC} > dict/utf-8.d/${DIC}"
+			system "nkf -w < ${worksrcpath}/dict/${DIC} > ${worksrcpath}/dict/utf-8.d/${DIC}"
 		}
 	}
 
