@@ -80,7 +80,18 @@ test.run			yes
 variant standalone description {Enable standalonize} {
 	depends_lib-append port:clewn
 	configure.env-append	PATH="/usr/bin:${env(PATH)}"
-	configure.cppflags-append	-DDYNAMIC_PERL -DDYNAMIC_PYTHON -DDYNAMIC_RUBY
+	if {[variant_isset perl]} {
+		configure.args-delete	--enable-perlinterp
+		configure.args-append	--enable-perlinterp=dynamic
+	}
+	if {[variant_isset python]} {
+		configure.args-delete	--enable-pythoninterp
+		configure.args-append	--enable-pythoninterp=dynamic
+	}
+	if {[variant_isset ruby]} {
+		configure.args-delete	--enable-rubyinterp
+		configure.args-append	--enable-rubyinterp=dynamic
+	}
 	pre-extract {
 		if {[catch {system "port installed|grep -e \" ruby @.*(active)\" -e \" perl5 @.*(active)\" -e \" perl5.8 @.*(active)\""} result]} {} else {
 			return -code error "perl or ruby is activated"
