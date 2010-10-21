@@ -2,7 +2,7 @@
 
 PortSystem 1.0
 name            fmdiff
-version         7819
+version         13456
 revision        0
 categories      devel
 maintainers     nomaintainer@macports.org
@@ -19,7 +19,7 @@ homepage        http://ssel.vub.ac.be/ssel/internal:fmdiff
 platforms       darwin
 
 fetch.type      svn
-svn.url         http://ssel.vub.ac.be/svn-gen/bdefrain/fmscripts/
+svn.url         http://soft.vub.ac.be/svn-gen/bdefrain/fmscripts/
 svn.tag         ${version}
 worksrcdir      fmscripts
 
