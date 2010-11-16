@@ -3,7 +3,7 @@ PortSystem 1.0
 
 name			vimproc
 version			v4.00
-revision		0
+revision		1
 categories		editors
 maintainers		nomaintainer
 description		Interactive command execution in Vim.
@@ -13,10 +13,10 @@ homepage		http://github.com/Shougo/vimproc/
 platforms		darwin
 
 #set gittag		${version}
-set gittag		04d3b27b6460fea87015edb90026822a4ffe8920
+set gittag		65bdfa2d34b76023d7c09d8ed29a1f8a5458bdda
 distname		${name}-${gittag}
 use_zip			yes
-checksums		${distname}.zip sha1 94b559dc1c082cc2305c94bec3e61f67534cb0a2
+checksums		${distname}.zip sha1 912ffd273642c06da5134647d840116af56e254d
 master_sites	"http://github.com/Shougo/vimproc/zipball/${gittag}?"
 use_configure	no
 build.cmd		make -f make_mac.mak
@@ -31,12 +31,24 @@ post-patch {
 }
 
 destroot {
-	set dstdir ${destroot}${prefix}/share/vimproc/autoload
-	xinstall -d -m 0755 ${dstdir}
-	xinstall -m 0755 ${worksrcpath}/autoload/proc.so ${dstdir}
-	xinstall -m 0644 ${worksrcpath}/autoload/vimproc.vim ${dstdir}
-	xinstall -d -m 0755 ${dstdir}/vimproc
-	xinstall -m 0644 ${worksrcpath}/autoload/vimproc/parser.vim ${dstdir}/vimproc
+	set dstdir ${destroot}${prefix}/share/vimproc
+
+	set autoloaddir ${dstdir}/autoload
+	set autoloadsrc ${worksrcpath}/autoload
+	xinstall -d -m 0755 ${autoloaddir}
+	xinstall -d -m 0755 ${autoloaddir}/vimproc
+	xinstall -m 0755 ${autoloadsrc}/proc.so ${autoloaddir}
+	xinstall -m 0644 ${autoloadsrc}/vimproc.vim ${autoloaddir}
+	xinstall -m 0644 ${autoloadsrc}/vimproc/parser.vim ${autoloaddir}/vimproc
+
+	set docdir ${dstdir}/doc
+	xinstall -d -m 0755 ${docdir}
+	xinstall -m 0644 ${worksrcpath}/doc/vimproc.jax ${docdir}
+	xinstall -m 0644 ${worksrcpath}/doc/vimproc.txt ${docdir}
+
+	set plugindir ${dstdir}/plugin
+	xinstall -d -m 0755 ${plugindir}
+	xinstall -m 0644 ${worksrcpath}/plugin/vimproc.vim ${plugindir}
 }
 
 default_variants +universal
