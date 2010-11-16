@@ -44,6 +44,9 @@ variant perl description {Enable Perl scripting} {
 variant python description {Enable Python scripting} {
 	configure.args-append	--enable-pythoninterp
 }
+variant python3 description {Enable Python3 scripting} {
+	configure.args-append	--enable-python3interp
+}
 variant ruby description {Enable Ruby scripting} {
 	configure.args-append	--enable-rubyinterp
 }
@@ -88,6 +91,10 @@ variant standalone description {Enable standalonize} {
 		configure.args-delete	--enable-pythoninterp
 		configure.args-append	--enable-pythoninterp=dynamic
 	}
+	if {[variant_isset python3]} {
+		configure.args-delete	--enable-python3interp
+		configure.args-append	--enable-python3interp=dynamic
+	}
 	if {[variant_isset ruby]} {
 		configure.args-delete	--enable-rubyinterp
 		configure.args-append	--enable-rubyinterp=dynamic
@@ -103,6 +110,10 @@ variant standalone description {Enable standalonize} {
 		reinplace "s|^RUBY_LIBS|#RUBY_LIBS|" ${worksrcpath}/auto/config.mk
 	}
 	post-destroot {
+		# macvim-askpass
+		xinstall -m 755 ${worksrcpath}/src/MacVim/macvim-askpass \
+			${appPath}/MacOS/macvim-askpass
+
 		# ctags
 		file copy ${prefix}/bin/ctags ${appPath}/MacOS
 
