@@ -2,7 +2,7 @@
 PortSystem	1.0
 
 name				macvim
-version				20101102
+version				20101214
 revision			0
 categories			editors
 platforms			darwin
@@ -13,7 +13,7 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 6100f58c5de8824e52d6ffc4675b858490db1e83
+checksums			sha1 65523642409b2eb3aac39562cf3b42e41a080eca
 distfiles			${version}
 worksrcdir			macvim/src
 
@@ -50,6 +50,9 @@ variant python3 description {Enable Python3 scripting} {
 variant ruby description {Enable Ruby scripting} {
 	configure.args-append	--enable-rubyinterp
 }
+variant ruby19 description {Enable Ruby1.9 scripting} {
+	configure.args-append	--enable-ruby19interp
+}
 variant tcl description {Enable Tcl scripting} {
 	configure.args-append	--enable-tclinterp
 }
@@ -81,7 +84,7 @@ destroot {
 test.run			yes
 
 variant standalone description {Enable standalonize} {
-	depends_lib-append port:clewn
+	depends_lib-append port:vimproc port:clewn
 	configure.env-append	PATH="/usr/bin:${env(PATH)}"
 	if {[variant_isset perl]} {
 		configure.args-delete	--enable-perlinterp
@@ -99,6 +102,10 @@ variant standalone description {Enable standalonize} {
 		configure.args-delete	--enable-rubyinterp
 		configure.args-append	--enable-rubyinterp=dynamic
 	}
+	if {[variant_isset ruby19]} {
+		configure.args-delete	--enable-ruby19interp
+		configure.args-append	--enable-ruby19interp=dynamic
+	}
 	pre-extract {
 		if {[catch {system "port installed|grep -e \" ruby @.*(active)\" -e \" perl5 @.*(active)\" -e \" perl5.8 @.*(active)\""} result]} {} else {
 			return -code error "perl or ruby is activated"
@@ -107,15 +114,21 @@ variant standalone description {Enable standalonize} {
 	post-configure {
 		reinplace "s|^PERL_LIBS|#PERL_LIBS|" ${worksrcpath}/auto/config.mk
 		reinplace "s|^PYTHON_LIBS|#PYTHON_LIBS|" ${worksrcpath}/auto/config.mk
+		reinplace "s|^PYTHON3_LIBS|#PYTHON3_LIBS|" ${worksrcpath}/auto/config.mk
 		reinplace "s|^RUBY_LIBS|#RUBY_LIBS|" ${worksrcpath}/auto/config.mk
+		reinplace "s|^RUBY19_LIBS|#RUBY19_LIBS|" ${worksrcpath}/auto/config.mk
 	}
 	post-destroot {
 		# macvim-askpass
-		xinstall -m 755 ${worksrcpath}/src/MacVim/macvim-askpass \
+		xinstall -m 755 ${worksrcpath}/MacVim/macvim-askpass \
 			${appPath}/MacOS/macvim-askpass
 
 		# ctags
 		file copy ${prefix}/bin/ctags ${appPath}/MacOS
+
+		# vimproc.so
+		set vimprocPath ${prefix}/share/vimproc/autoload
+		file copy ${vimprocPath}/proc.so ${runtimePath}/autoload
 
 		# clewn
 		file copy ${prefix}/bin/clewn ${appPath}/MacOS
