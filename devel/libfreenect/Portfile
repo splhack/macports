@@ -1,0 +1,43 @@
+# $Id$
+PortSystem	1.0
+
+name				libfreenect
+epoch				20101212
+version				bdd921
+revision			0
+categories			devel
+platforms			darwin
+maintainers			nomaintainer
+description			libfreenect
+long_description	${description}
+
+homepage			http://github.com/OpenKinect/libfreenect
+fetch.type			git
+git.branch			${version}
+git.url				http://github.com/OpenKinect/libfreenect.git
+
+depends_lib			port:cmake port:libusb-devel
+
+use_configure		no
+configure.dir		${worksrcpath}/build
+build.dir			${worksrcpath}/build
+
+post-extract {
+	file mkdir ${worksrcpath}/build
+}
+
+post-patch {
+	reinplace "s|\\(.*CMAKE_INSTALL_PREFIX \"\\)/usr/local\\(\".*\\))|\\1${prefix}\\2 FORCE)|g" ${worksrcpath}/cmake_modules/SetupDirectories.cmake
+}
+
+configure {
+	system "cd ${build.dir} && cmake .."
+}
+
+post-destroot {
+	foreach exec {cppview glview glpclview} {
+		foreach dylib {libfreenect.0.0 libfreenect_sync.0.0} {
+			system "install_name_tool -change ${dylib}.dylib ${prefix}/lib/${dylib}.dylib ${destroot}${prefix}/bin/${exec}"
+		}
+	}
+}
