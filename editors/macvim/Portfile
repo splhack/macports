@@ -2,7 +2,7 @@
 PortSystem	1.0
 
 name				macvim
-version				20101214
+version				20101222
 revision			0
 categories			editors
 platforms			darwin
@@ -13,7 +13,7 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 65523642409b2eb3aac39562cf3b42e41a080eca
+checksums			sha1 286f5b64f8bf1b99d4557efc0b0b30e7a07ab4f9
 distfiles			${version}
 worksrcdir			macvim/src
 
