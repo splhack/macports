@@ -3,7 +3,7 @@ PortSystem 1.0
 
 name			vimproc
 version			v4.00
-revision		1
+revision		2
 categories		editors
 maintainers		nomaintainer
 description		Interactive command execution in Vim.
@@ -13,10 +13,10 @@ homepage		http://github.com/Shougo/vimproc/
 platforms		darwin
 
 #set gittag		${version}
-set gittag		65bdfa2d34b76023d7c09d8ed29a1f8a5458bdda
+set gittag		0b8b58d4dc6b2223a5f6759246af45515bc97d57
 distname		${name}-${gittag}
 use_zip			yes
-checksums		${distname}.zip sha1 912ffd273642c06da5134647d840116af56e254d
+checksums		${distname}.zip sha1 9e38a9a55653b398cd74051bac7f044919710f01
 master_sites	"http://github.com/Shougo/vimproc/zipball/${gittag}?"
 use_configure	no
 build.cmd		make -f make_mac.mak
