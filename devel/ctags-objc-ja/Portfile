@@ -2,7 +2,7 @@
 PortSystem 1.0
 
 name			ctags-objc-ja
-version			20090508
+version			20110201
 revision		0
 categories		devel
 maintainers		nomaintainer
@@ -24,7 +24,7 @@ set gittag		${version}
 distname		${name}-${gittag}
 use_zip			yes
 checksums		\
-	${distname}.zip sha1 67f7b8b7115c7aa53b65c2f229fd82cff5e98fe7
+	${distname}.zip sha1 ecbf995e9d9a825943d3109b573ba02f83ade205
 master_sites	\
 	"http://github.com/splhack/ctags-objc-ja/zipball/${gittag}?"
 
