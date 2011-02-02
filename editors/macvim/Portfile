@@ -86,7 +86,7 @@ destroot {
 test.run			yes
 
 variant standalone description {Enable standalonize} {
-	depends_lib-append port:vimproc port:clewn
+	depends_lib-append port:vimproc
 	configure.env-append	PATH="/usr/bin:${env(PATH)}"
 	if {[variant_isset perl]} {
 		configure.args-delete	--enable-perlinterp
@@ -132,21 +132,12 @@ variant standalone description {Enable standalonize} {
 		set vimprocPath ${prefix}/share/vimproc/autoload
 		file copy ${vimprocPath}/proc.so ${runtimePath}/autoload
 
-		# clewn
-		file copy ${prefix}/bin/clewn ${appPath}/MacOS
-		set clewnPath ${prefix}/share/clewn
-		file copy ${clewnPath}/.clewn_keys ${runtimePath}
-		file copy ${clewnPath}/clewn.vim ${runtimePath}
-		file copy ${clewnPath}/doc/clewn.txt ${runtimePath}/doc
-		file copy ${clewnPath}/macros/clewn_mappings.vim ${runtimePath}/macros
-		file copy ${clewnPath}/syntax/gdbvar.vim ${runtimePath}/syntax
-
 		# dylibs
 		foreach dylib {intl.8 iconv.2 migemo.1 ncurses.5 readline.6} {
 			set libname [lindex [split ${dylib} .] 0]
 			set instname "@executable_path/../Frameworks/lib${libname}.dylib"
 			set origname "${prefix}/lib/lib${dylib}.dylib"
-			foreach exec {MacOS/Vim MacOS/clewn} {
+			foreach exec {MacOS/Vim} {
 				system "install_name_tool \
 					-change ${origname} ${instname} ${appPath}/${exec}"
 			}
