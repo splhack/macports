@@ -3,7 +3,7 @@ PortSystem 1.0
 
 name			vimproc
 version			v4.00
-revision		2
+revision		3
 categories		editors
 maintainers		nomaintainer
 description		Interactive command execution in Vim.
@@ -13,10 +13,10 @@ homepage		http://github.com/Shougo/vimproc/
 platforms		darwin
 
 #set gittag		${version}
-set gittag		0b8b58d4dc6b2223a5f6759246af45515bc97d57
+set gittag		f843a274f969a85fbbc180d4a8acabb5cd5d13c0
 distname		${name}-${gittag}
 use_zip			yes
-checksums		${distname}.zip sha1 9e38a9a55653b398cd74051bac7f044919710f01
+checksums		${distname}.zip sha1 3b2f22d979e3ecc7bb569d9c620c19d0df9a6785
 master_sites	"http://github.com/Shougo/vimproc/zipball/${gittag}?"
 use_configure	no
 build.cmd		make -f make_mac.mak
@@ -26,7 +26,7 @@ post-extract {
 }
 
 post-patch {
-	reinplace -E "s/^(CFLAGS.*) -arch ppc64\$/\\1 -mmacosx-version-min=10.4/" \
+	reinplace -E "s/^(CFLAGS.*)/\\1 -arch ppc -mmacosx-version-min=10.5/" \
 		${worksrcpath}/make_mac.mak
 }
 
@@ -40,6 +40,7 @@ destroot {
 	xinstall -m 0755 ${autoloadsrc}/proc.so ${autoloaddir}
 	xinstall -m 0644 ${autoloadsrc}/vimproc.vim ${autoloaddir}
 	xinstall -m 0644 ${autoloadsrc}/vimproc/parser.vim ${autoloaddir}/vimproc
+	xinstall -m 0644 ${autoloadsrc}/vimproc/util.vim ${autoloaddir}/vimproc
 
 	set docdir ${dstdir}/doc
 	xinstall -d -m 0755 ${docdir}
