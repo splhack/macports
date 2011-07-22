@@ -6,8 +6,8 @@
  EXEEXT		=
 -CFLAGS_MIGEMO	= -fPIC
 -LDFLAGS_MIGEMO	=
-+CFLAGS_MIGEMO	= -fPIC -arch x86_64 -arch i386 -arch ppc
-+LDFLAGS_MIGEMO	= -arch x86_64 -arch i386 -arch ppc
++CFLAGS_MIGEMO	= -fPIC -arch x86_64 -arch i386
++LDFLAGS_MIGEMO	= -arch x86_64 -arch i386
  
  include config.mk
  include compile/unix.mak
@@ -16,7 +16,7 @@
  $(libmigemo_LIB): $(libmigemo_DSO)
  $(libmigemo_DSO): $(libmigemo_OBJ)
 -	$(CC) -dynamiclib -install_name $(prefix)/lib/$@ -o $(libmigemo_LIB) $(libmigemo_OBJ)
-+	$(CC) -arch x86_64 -arch i386 -arch ppc -dynamiclib -install_name $(prefix)/lib/$@ -o $(libmigemo_LIB) $(libmigemo_OBJ)
++	$(CC) -arch x86_64 -arch i386 -dynamiclib -install_name $(prefix)/lib/$@ -o $(libmigemo_LIB) $(libmigemo_OBJ)
  	$(RM) $@ $(libmigemo)
  	ln -s $(libmigemo_LIB) $@
  	ln -s $(libmigemo_LIB) $(libmigemo)

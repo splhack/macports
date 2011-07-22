@@ -2,8 +2,8 @@
 
 PortSystem 1.0
 name			cmigemo
-version			1.3c
-revision		8
+version			20110227
+revision		0
 categories		textproc
 depends_lib		bin:iconv:libiconv bin:nkf:nkf
 maintainers		nomaintainer
@@ -15,22 +15,22 @@ long_description	\
 patchfiles		patch-config.mk.in.diff \
 				patch-config_default.mk.diff patch-dict.mk.diff \
 				patch-Make_osx.mk.diff \
-				patch-romaji.c patch-mnode.c
-extract.suffix	tar.bz2
-use_bzip2		yes
+				patch-romaji.c patch-mnode.c patch-wordbuf.c
+use_zip			yes
+worksrcdir		cmigemo-default-src
+set distfile	${worksrcdir}-${version}${extract.suffix}
 set dictfile	SKK-JISYO.ML.gz
-distfiles		${distname}${extract.suffix}:src \
+distfiles		${distfile}:src \
 				${dictfile}:dic
 homepage		http://www.kaoriya.net/
-master_sites    http://www.kaoriya.net/dist/var:src \
+master_sites    http://cmigemo.googlecode.com/files:src \
 				http://openlab.jp/skk/dic:dic
-checksums		${distname}${extract.suffix} md5 \
-				 	0b9d2feff4cfdc673cc1947fe54191ed \
-				${dictfile} none
-extract.only	${distname}${extract.suffix}
+checksums		${distfile} sha1 25e279c56d3a8f1e82cbfb3526d1b38742d1d66c \
+				${dictfile} sha1 196970f227667ab8fc60db13a1b2c76dd80434d2
+extract.only	${distfile}
 post-extract	{file copy ${distpath}/${dictfile} \
 					  ${worksrcpath}/dict/SKK-JISYO.L.gz}
-build.env			CC=cc
+build.env			CC=gcc-4.2
 build.target		osx osx-dict
 
 set dics			{han2zen.dat hira2kata.dat migemo-dict roma2hira.dat zen2han.dat}
@@ -44,6 +44,7 @@ post-patch			{
 	foreach TOOL ${tools} {
 		reinplace "s|/usr/bin/|/usr/bin/env |" ${worksrcpath}/tools/${TOOL}
 	}
+	file attributes ${worksrcpath}/configure -permissions 0755
 }
 
 destroot			{
