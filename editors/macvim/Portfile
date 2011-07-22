@@ -2,7 +2,7 @@
 PortSystem	1.0
 
 name				macvim
-version				20110630
+version				20110721
 revision			0
 categories			editors
 platforms			darwin
@@ -13,8 +13,9 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 25dfd43a4b3aa5931ced7b47b80c6b4be7f1f558
-distfiles			${version}
+checksums			sha1 07dd2a4786c9e9c1483caa8793e83fd5578c73df
+#distfiles			${version}
+distfiles			8f88640653ff1b76abb6c29575544c2407cffb25
 worksrcdir			macvim/src
 
 depends_lib			port:cmigemo \
@@ -34,7 +35,7 @@ if {[variant_isset universal]} {
 	set macosx_deployment_target 10.5
 	configure.cc	/usr/bin/gcc-4.2
 	configure.args-append	--with-macarchs="${universal_archs}"
-	configure.cmd	XCODEFLAGS="VALID_ARCHS='${universal_archs}' GCC_VERSION=4.2" ./configure
+	configure.cmd	XCODEFLAGS="VALID_ARCHS='${universal_archs}'" ./configure
 }
 
 use_parallel_build	yes
