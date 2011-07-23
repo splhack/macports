@@ -2,7 +2,7 @@
 PortSystem	1.0
 
 name				macvim
-version				20110721
+version				20110725
 revision			0
 categories			editors
 platforms			darwin
@@ -13,9 +13,8 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 07dd2a4786c9e9c1483caa8793e83fd5578c73df
-#distfiles			${version}
-distfiles			8f88640653ff1b76abb6c29575544c2407cffb25
+checksums			sha1 2548af15ef5de63c1abf56c6f7659fa23db5ae12
+distfiles			${version}
 worksrcdir			macvim/src
 
 depends_lib			port:cmigemo \
@@ -29,13 +28,20 @@ configure.args		--with-features=huge \
 					--enable-netbeans \
 					--with-tlib=ncurses
 configure.cppflags	-I${prefix}/include
-configure.ldflags	-L${prefix}/lib
+configure.ldflags	-L${prefix}/lib -headerpad_max_install_names
+set configmk		${worksrcpath}/auto/config.mk
 
 if {[variant_isset universal]} {
-	set macosx_deployment_target 10.5
+	set macosx_deployment_target 10.6
 	configure.cc	/usr/bin/gcc-4.2
 	configure.args-append	--with-macarchs="${universal_archs}"
 	configure.cmd	XCODEFLAGS="VALID_ARCHS='${universal_archs}'" ./configure
+
+	post-configure {
+		set sdkpath	/Developer/SDKs/MacOSX${macosx_deployment_target}.sdk
+		reinplace "s|-Wl,-syslibroot,${sdkpath}||g" ${configmk}
+		reinplace "s|-isysroot ${sdkpath}||g" ${configmk}
+	}
 }
 
 use_parallel_build	yes
@@ -116,11 +122,11 @@ variant standalone description {Enable standalonize} {
 		}
 	}
 	post-configure {
-		reinplace "s|^PERL_LIBS|#PERL_LIBS|" ${worksrcpath}/auto/config.mk
-		reinplace "s|^PYTHON_LIBS|#PYTHON_LIBS|" ${worksrcpath}/auto/config.mk
-		reinplace "s|^PYTHON3_LIBS|#PYTHON3_LIBS|" ${worksrcpath}/auto/config.mk
-		reinplace "s|^RUBY_LIBS|#RUBY_LIBS|" ${worksrcpath}/auto/config.mk
-		reinplace "s|^RUBY19_LIBS|#RUBY19_LIBS|" ${worksrcpath}/auto/config.mk
+		reinplace "s|^PERL_LIBS|#PERL_LIBS|" ${configmk}
+		reinplace "s|^PYTHON_LIBS|#PYTHON_LIBS|" ${configmk}
+		reinplace "s|^PYTHON3_LIBS|#PYTHON3_LIBS|" ${configmk}
+		reinplace "s|^RUBY_LIBS|#RUBY_LIBS|" ${configmk}
+		reinplace "s|^RUBY19_LIBS|#RUBY19_LIBS|" ${configmk}
 	}
 	post-destroot {
 		# macvim-askpass
