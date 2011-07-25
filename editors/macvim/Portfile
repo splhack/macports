@@ -13,7 +13,7 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 d2ad4a5a3772859d7a58254836394d5af1a61fe9
+checksums			sha1 e76c0269a9df04fca4e47a13a324b6f58ade2c9e
 distfiles			${version}
 worksrcdir			macvim/src
 
