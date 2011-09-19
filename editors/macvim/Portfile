@@ -2,7 +2,7 @@
 PortSystem	1.0
 
 name				macvim
-version				20110725
+version				20110919
 revision			0
 categories			editors
 platforms			darwin
@@ -13,7 +13,7 @@ long_description	MacVim supports multiple windows with tabbed editing and a host
 homepage			http://code.google.com/p/macvim-kaoriya/
 
 master_sites		http://github.com/splhack/macvim/tarball
-checksums			sha1 e76c0269a9df04fca4e47a13a324b6f58ade2c9e
+checksums			sha1 d3859092884afa6346f92eef6babaf203973570a
 distfiles			${version}
 worksrcdir			macvim/src
 
@@ -85,10 +85,6 @@ set runtimePath "${vimPath}/runtime"
 destroot {
 	file copy ${worksrcpath}/MacVim/build/Release/MacVim.app ${destroot}${applications_dir}
 	xinstall -m 755 ${worksrcpath}/MacVim/mvim ${destroot}${prefix}/bin
-	xinstall -d 755 ${runtimePath}/lang/ja_JP.UTF-8/LC_MESSAGES
-	xinstall -m 644 ${worksrcpath}/po/ja_JP.UTF-8.mo \
-		${runtimePath}/lang/ja_JP.UTF-8/LC_MESSAGES/vim.mo
-	file copy ${worksrcpath}/../plugins ${vimPath}
 }
 
 test.run			yes
@@ -131,10 +127,6 @@ variant standalone description {Enable standalonize} {
 		reinplace "s|^RUBY19_LIBS|#RUBY19_LIBS|" ${configmk}
 	}
 	post-destroot {
-		# macvim-askpass
-		xinstall -m 755 ${worksrcpath}/MacVim/macvim-askpass \
-			${appPath}/MacOS/macvim-askpass
-
 		# ctags
 		file copy ${prefix}/bin/ctags ${appPath}/MacOS
 
@@ -176,9 +168,5 @@ variant standalone description {Enable standalonize} {
 			xinstall -m 644 ${prefix}/share/migemo/utf-8/${mdict} \
 				${runtimePath}/dict
 		}
-
-		# vim tags
-		system "${appPath}/MacOS/Vim \
-			--cmd \":helptag ${runtimePath}/doc\" --cmd :quit"
 	}
 }
