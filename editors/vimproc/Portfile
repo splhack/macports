@@ -2,7 +2,7 @@
 PortSystem 1.0
 
 name			vimproc
-version			v5.3
+version			v6.1
 revision		0
 categories		editors
 maintainers		nomaintainer
@@ -13,10 +13,10 @@ homepage		http://github.com/Shougo/vimproc/
 platforms		darwin
 
 #set gittag		${version}
-set gittag		f18a37ea6ee8b15d07608bb8ae0f2651c11a6e30
+set gittag		9c769ba73b3f3c3cce6d4c5049abb445dfd3a9e5
 distname		${name}-${gittag}
 use_zip			yes
-checksums		${distname}.zip sha1 cbbc359f59969a6dcd2271a81de2bb0b92d1d2c2
+checksums		${distname}.zip sha1 2b358588fe98964394b125c90cb209c8bb4c36aa
 master_sites	"http://github.com/Shougo/vimproc/zipball/${gittag}?"
 use_configure	no
 build.cmd		make -f make_mac.mak
